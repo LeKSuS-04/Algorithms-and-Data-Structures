@@ -28,8 +28,8 @@ private:
         if (i >= L && j <= R) return st[p];
 
         int m = (L + R) / 2;
-        int lsubtree = rmq(l(p),     L, m,         i, max(j, m));
-        int rsubtree = rmq(r(p), m + 1, R, min(i, m),         j);
+        int lsubtree = rmq(l(p),     L, m,             i, min(j, m));
+        int rsubtree = rmq(r(p), m + 1, R, max(i, m + 1),         j);
 
         if (lsubtree == -1) return rsubtree;
         if (rsubtree == -1) return lsubtree;
