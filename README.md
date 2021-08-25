@@ -7,3 +7,5 @@ By the time, this repository will grow, recieving more entries. Keep in mind tha
 ## Resources
 Of course, I haven't figured this ideas and implementations myself; Here are resources I've learned this information from:
 * Steven Halim & Felix Halim - Competitive Programming 3: The New Lower Bound of Programming Contests ([link](https://cpbook.net/))
+* ITMO Academy: pilot course from Codeforces ([link](https://codeforces.com/edu/courses))
+* WilliamFiset's Youtube channel and GitHub repository ([github](https://github.com/williamfiset/algorithms), [youtube](https://www.youtube.com/channel/UCD8yeTczadqdARzQUp29PJw))
