@@ -25,6 +25,6 @@ public:
             --n;
         }
     }
-    int set_size(int i) { return s[find_set(i)]; }
-    int count() { return n; }
+    int size_of_set(int i) { return s[find_set(i)]; }
+    int number_of_sets() { return n; }
 };
