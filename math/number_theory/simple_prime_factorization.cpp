@@ -21,9 +21,13 @@ void sieve() {
 }
 
 // Requires sieve() to be computed before.
-// Works for n < (lp * lp), where pl is
+// Works for n < (lp * lp), where lp is
 // the last prime in vector<int> primes.
-// ~ O(sqrt(n)/ln(sqrt(n)))
+// So, to factorize a number n, you need
+// only sieve of sqrt(n), resulting in
+// complexity:
+// O(sqrt(n) log log sqrt(n)) precomputation
+// + O(sqrt(n)/ln(sqrt(n))) for each n
 vector<int> prime_factorization(ll n) {
     vector<int> factors;
     ll pf_idx = 0, pf = primes[pf_idx];
