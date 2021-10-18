@@ -59,7 +59,7 @@ public:
         }
     }
 
-    int& operator[](int idx) { return SA[idx]; }
+    int operator[](int idx) { return SA[idx]; }
     string base_str() { return T; }
     int size() { return n; }
 };
