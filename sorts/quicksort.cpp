@@ -4,8 +4,6 @@ using namespace std;
 int get_rand(int from, int to) {
     return rand() % (to - from) + from;
 }
-vector<int> v;
-
 
 void quick_sort(vector<int>::iterator from, vector<int>::iterator to) {
     int size = to - from;
@@ -35,9 +33,10 @@ void quick_sort(vector<int>::iterator from, vector<int>::iterator to) {
 int main() {
     srand(time(nullptr));
     const int VECTOR_SIZE = 20;
+    vector<int> v(VECTOR_SIZE);
     
     for (int i = 0; i < VECTOR_SIZE; i++) {
-        v.push_back(get_rand(0, 10));
+        v[i] = get_rand(0, 10);
     }
     cout << "Before sort:";
     for (auto&& vi : v) {
