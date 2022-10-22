@@ -1,42 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+const int VECTOR_SIZE = 30;
+vector<int> v(VECTOR_SIZE);
+
 int get_rand(int from, int to) {
     return rand() % (to - from) + from;
 }
 
-void quick_sort(vector<int>::iterator from, vector<int>::iterator to) {
-    int size = to - from;
-    if (size <= 1) return;
-
-    vector<int> small, big;
-    int pivot = *(from + get_rand(0, size)), pivot_cnt = 0;
-    for (auto it = from; it < to; it++) {
-        if (*it < pivot) small.push_back(*it);
-        else if (*it > pivot) big.push_back(*it);
-        else pivot_cnt += 1;
+vector<int>::iterator partition(vector<int>::iterator from, vector<int>::iterator to) {
+    int pivot = *(from + get_rand(0, to - from));
+    while (true) {
+        while (*from < pivot) ++from;
+        while (*to > pivot) --to;
+        if (from >= to) return to;
+        swap(*from, *to);
+        ++from;
+        --to;
     }
-    int i = 0;
-    for (int j = 0; j < small.size(); j++, i++) *(from + i) = small[j];
-    for (int j = 0; j < pivot_cnt   ; j++, i++) *(from + i) = pivot;
-    for (int j = 0; j < big.size()  ; j++, i++) *(from + i) = big[j];
-    int small_size = small.size();
-    small.resize(0);
-    small.shrink_to_fit();
-    big.resize(0);
-    big.shrink_to_fit();
+}
 
-    quick_sort(from, from + small_size);
-    quick_sort(from + small_size + pivot_cnt, to);
+void quick_sort(vector<int>::iterator from, vector<int>::iterator to) {
+    if (prev(to) <= from) return;
+    auto pivot = partition(from, prev(to));
+    quick_sort(from, next(pivot));
+    quick_sort(pivot + 1, to);
 }
 
 int main() {
     srand(time(nullptr));
-    const int VECTOR_SIZE = 20;
-    vector<int> v(VECTOR_SIZE);
     
     for (int i = 0; i < VECTOR_SIZE; i++) {
-        v[i] = get_rand(0, 10);
+        v[i] = get_rand(0, 100);
     }
     cout << "Before sort:";
     for (auto&& vi : v) {
