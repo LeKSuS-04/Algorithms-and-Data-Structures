@@ -43,8 +43,9 @@ class Treap {
 
    public:
     bool contains(int key) {
-        auto [less, greater] = split(root, key);
-        auto [less, equal] = split(less, key - 1);
+        NodePtr less, equal, greater;
+        tie(less, greater) = split(root, key);
+        tie(less, equal) = split(less, key - 1);
         bool result = (equal == nullptr);
         root = merge(merge(less, equal), greater);
         return result;
@@ -57,8 +58,9 @@ class Treap {
     }
 
     void erase(int key) {
-        auto [less, greater] = split(root, key);
-        auto [less, equal] = split(less, key - 1);
+        NodePtr less, equal, greater;
+        tie(less, greater) = split(root, key);
+        tie(less, equal) = split(less, key - 1);
         root = merge(less, greater);
     }
 };
