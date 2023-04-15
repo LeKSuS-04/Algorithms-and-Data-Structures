@@ -1,32 +1,58 @@
-const int MOD = 1e9 + 7;
+#include <bits/stdc++.h>
+using namespace std;
 
-// In C++, module of negative number is a
-// negative number; for example:
-// -100 % 3 = -1;
-// In mathematics, module of a number always
-// has to be positive, so 
-// -100 % 3 = 2;
-// This function forces C++ to act in 
-// "math way" and return only positive 
-// modules.
-long long mod(long long a) { return (a % MOD + MOD) % MOD; }
+class Zmod {
+    static const int MOD = 59;
+    using ll = long long;
 
-// In fact, this operations are not worth it 
-// to be separated into the whole function,
-// so these are made only for demonstration
-// purposes
-long long  add(long long a, long long b) { return mod(mod(a) + mod(b)); }
-long long  sub(long long a, long long b) { return mod(mod(a) - mod(b)); }
-long long mult(long long a, long long b) { return mod(mod(a) * mod(b)); } // be careful, might result in overflow
+   private:
+    ll val;
 
-// Rises a to power of b modulo m 
-long long pow(long long a, long long b) {
-    if (b == 0) return 1;
-    else if (b & 1) return mod(a * pow(a, b - 1));
-    else return pow(mod(a*a), b/2);
+    inline ll mod(ll n) const { return (MOD + n % MOD) % MOD; }
+
+   public:
+    Zmod(ll n = 0) : val(mod(n)) {}
+
+    Zmod operator-() const { return mod(-val); }
+    Zmod operator+() const { return mod(-val); }
+
+    Zmod operator+(const Zmod& other) const { return mod(val + other.val); }
+    Zmod operator-(const Zmod& other) const { return mod(val - other.val); }
+    Zmod operator*(const Zmod& other) const { return mod(val * other.val); }
+
+    friend Zmod pow(Zmod n, ll p) {
+        if (p == 0) return 1;
+        if (p % 2 == 0) return pow(n * n, p / 2);
+        return n * pow(n, p - 1);
+    }
+    friend Zmod pow(Zmod n, Zmod p) { return pow(n, p.val); }
+
+    Zmod inverse() const { return pow(*this, MOD - 2); }
+    Zmod operator/(const Zmod& other) const { return operator*(other.inverse()); }
+
+    friend std::istream& operator>>(std::istream& in, Zmod& n) {
+        ll val;
+        in >> val;
+        n = Zmod(val);
+        return in;
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const Zmod& n) {
+        out << n.val;
+        return out;
+    }
+};
+
+int main() {
+    Zmod a, b;
+    cout << "Enter a: ";
+    cin >> a;
+    cout << "Enter b: ";
+    cin >> b;
+    cout << "-a = -" << a << " = " << -a << endl;
+    cout << "a + b = " << a << " + " << b << " = " << a + b << endl;
+    cout << "a - b = " << a << " - " << b << " = " << a - b << endl;
+    cout << "a * b = " << a << " * " << b << " = " << a * b << endl;
+    cout << "a / b = " << a << " / " << b << " = " << a / b << endl;
+    cout << "pow(a, b) = " << a << "^" << b << " = " << pow(a, b) << endl;
 }
-
-// Division is performed by inversing 
-// number (Fermat's little theorem)
-long long inverse(long long a) { return pow(a, MOD - 2); }
-long long divide(long long a, long long b) { return mod(a * inverse(b)); }
