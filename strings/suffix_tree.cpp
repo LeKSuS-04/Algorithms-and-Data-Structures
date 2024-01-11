@@ -124,8 +124,11 @@ struct SuffixTree {
                 break;
             }
 
-            current.v = get_link(mid);
-            current.pos = current.v->len();
+            Vertex* l = get_link(mid);
+            current = State{
+                .v = l,
+                .pos = l->len(),
+            };
         }
     }
 };
