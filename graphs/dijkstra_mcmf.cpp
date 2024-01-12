@@ -65,32 +65,6 @@ struct Graph {
             }
         };
 
-        const auto& dfs = [&](int v, ll max_f, const auto& self) {
-            used[v] = true;
-
-            if (v == target) {
-                return max_f == INF ? 0LL : max_f;
-            }
-
-            for (auto i : AL[v]) {
-                const auto& e = edges[i];
-
-                if (used[e.to] || e.delta() == 0 || e.cost + phi[v] - phi[e.to] != 0) {
-                    continue;
-                }
-
-                ll flow = self(e.to, min(max_f, e.delta()), self);
-                if (flow == 0) {
-                    continue;
-                }
-                edges[i].flow += flow;
-                edges[i ^ 1].flow -= flow;
-                return flow;
-            }
-
-            return 0LL;
-        };
-
         const auto& dijkstra = [&]() {
             priority_queue<ii, vector<ii>, greater<ii>> pq;
             pq.push({0, source});
