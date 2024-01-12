@@ -9,7 +9,7 @@ struct AhoCorasick {
     inline static const int EMPTY = -1;
     struct Vertex {
         vector<int> to, go;
-        int link = EMPTY, parent = EMPTY;
+        int link = EMPTY, compressed_link = EMPTY, parent = EMPTY;
         char c = EMPTY;
 
         bool terminal = false;
@@ -53,6 +53,21 @@ struct AhoCorasick {
         return v.link;
     }
 
+    int next_bad(int vi) {
+        Vertex& v = vertices[vi];
+        if (v.compressed_link == EMPTY) {
+            int l = link(vi);
+            if (vertices[l].terminal) {
+                v.compressed_link = l;
+            } else if (l == root) {
+                v.compressed_link = root;
+            } else {
+                v.compressed_link = next_bad(l);
+            }
+        }
+        return v.compressed_link;
+    }
+
     int go(int vi, char c) {
         Vertex& v = vertices[vi];
         if (v.go[c] == EMPTY) {
@@ -69,8 +84,8 @@ struct AhoCorasick {
 };
 
 int main() {
-    string s = "lolkeklol";
-    vector<string> banned = {"lol", "kek"};
+    string s = "abababcababbabcbab";
+    vector<string> banned = {"aba", "bab", "bbb"};
     AhoCorasick corasick;
 
     for (const auto& str : banned) {
