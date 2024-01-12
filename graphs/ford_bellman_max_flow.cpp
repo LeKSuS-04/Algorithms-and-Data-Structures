@@ -31,55 +31,42 @@ struct Graph {
     }
 
     ll max_flow(int source, int target) {
-        auto bfs = [&](ll min_f, ll max_f) {
-            queue<int> q;
-            q.push(source);
-            vector<int> edge_from_parent(n, -1);
-            edge_from_parent[source] = 0;
+        int iter = 0;
+        vector<int> used(n, -1);
 
-            while (!q.empty()) {
-                int v = q.front();
-                q.pop();
+        auto dfs = [&](int v, ll min_f, ll max_f, const auto& self) {
+            used[v] = iter;
 
-                for (const int i : AL[v]) {
-                    const auto& e = edges[i];
-                    if (e.cap < min_f || edge_from_parent[e.to] != -1) {
-                        continue;
-                    }
+            if (v == target) {
+                return max_f;
+            }
 
-                    q.push(e.to);
-                    edge_from_parent[e.to] = i;
+            for (const auto& i : AL[v]) {
+                const auto& e = edges[i];
+                if (e.cap < min_f || used[e.to] == iter) {
+                    continue;
                 }
-            }
 
-            if (edge_from_parent[target] == -1) {
-                return 0LL;
-            }
+                ll flow = self(e.to, min_f, min(max_f, e.cap), self);
+                if (flow == 0) {
+                    continue;
+                }
 
-            ll cur = target;
-            ll flow = max_f;
-            while (cur != source) {
-                const auto& e = edges[edge_from_parent[cur]];
-                flow = min(flow, e.cap);
-                cur = e.from;
-            }
-
-            cur = target;
-            while (cur != source) {
-                int i = edge_from_parent[cur];
                 edges[i].cap -= flow;
                 edges[i ^ 1].cap += flow;
-                cur = edges[i].from;
+                return flow;
             }
 
-            return flow;
+            return 0LL;
         };
 
         ll flow = 0;
         for (ll min_f = 1LL << 30; min_f > 0; min_f >>= 1) {
-            while (ll new_flow = bfs(min_f, numeric_limits<ll>::max())) {
+            while (ll new_flow = dfs(source, min_f, numeric_limits<ll>::max(), dfs)) {
                 flow += new_flow;
+                ++iter;
             }
+            ++iter;
         }
         return flow;
     }
