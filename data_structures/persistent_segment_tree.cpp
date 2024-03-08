@@ -1,22 +1,25 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename T, typename Func, typename DefaultValue>
+template <typename T>
 class PersistentSegmentTree {
+    using Func = function<T(T, T)>;
+    using DefaultFunc = function<T(int)>;
+
    private:
     struct Node {
         PersistentSegmentTree& pst;
-        Node *l, *r, *p;
+        Node *l, *r;
         int lb, rb;
         T val;
 
-        Node(PersistentSegmentTree& pst, Node* p, int lb, int rb) : pst(pst), p(p), lb(lb), rb(rb) {
+        Node(PersistentSegmentTree& pst, int lb, int rb) : pst(pst), lb(lb), rb(rb) {
             if (lb == rb) {
                 val = pst.default_value(lb);
             } else {
                 int m = (lb + rb) / 2;
-                l = new Node(pst, this, lb, m);
-                r = new Node(pst, this, m + 1, rb);
+                l = new Node(pst, lb, m);
+                r = new Node(pst, m + 1, rb);
                 val = pst.func(l->val, r->val);
             }
         }
@@ -56,7 +59,7 @@ class PersistentSegmentTree {
     };
 
     Func func;
-    DefaultValue default_value;
+    DefaultFunc default_value;
     vector<Node*> roots;
 
     Node* get_version_root(int version) {
@@ -67,9 +70,8 @@ class PersistentSegmentTree {
     }
 
    public:
-    PersistentSegmentTree(int size, Func f, DefaultValue d) : func(f), default_value(d) {
-        Node root(*this, nullptr, 0, size - 1);
-        roots.push_back(new Node(root));
+    PersistentSegmentTree(int size, Func f, DefaultFunc d) : func(f), default_value(d) {
+        roots.push_back(new Node(*this, 0, size - 1));
     }
 
     int add(int i, T delta, int version = -1) {
@@ -86,11 +88,8 @@ class PersistentSegmentTree {
 };
 
 int main() {
-    PersistentSegmentTree<int, function<int(int, int)>, function<int(int)>> tree(
-        5,
-        [](int a, int b) { return a + b; },
-        [](int i) { return i; }
-    );
+    PersistentSegmentTree<int> tree(
+        5, [](int a, int b) { return a + b; }, [](int i) { return i; });
 
     cout << tree.query(0, 4) << endl;
 
